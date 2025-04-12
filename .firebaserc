@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "ldhara"
+  },
+  "targets": {
+    "ldhara": {
+      "hosting": {
+        "jaldhara": [
+          "jaldhara"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
