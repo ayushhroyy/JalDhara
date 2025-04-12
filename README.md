@@ -1,3 +1,14 @@
+## 👨‍👩‍👧‍👦 Team XCaliber
+
+- **Team Leader:** Naman Bharadwaj
+- **Team Members:**
+  - Pavani Kandwal
+  - Ayush Roy
+  - Kasharika Uppal
+  - Naman Bharadwaj
+
+
+
 # JalDhara - AI-Powered Water Management for Sustainable Agriculture
 
 ![JalDhara Logo](public/logo.png)
