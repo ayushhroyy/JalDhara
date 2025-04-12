@@ -8,7 +8,7 @@
   - Naman Bharadwaj
 
 
-![WhatsApp Image 2025-04-12 at 23 33 40](https://github.com/user-attachments/assets/42466917-c937-44fc-8683-da0fe47768c2) 
+![WhatsApp Image 2025-04-12 at 23-1 33 40](https://github.com/user-attachments/assets/32ec10d3-b10c-4bd8-b134-32eb1983784b)
 
 # JalDhara - AI-Powered Water Management for Sustainable Agriculture
 
