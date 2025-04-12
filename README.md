@@ -7,7 +7,7 @@
   - Kasharika Uppal
   - Naman Bharadwaj
 
-[📊 Presentation link]([https://www.canva.com/design/DAGkbyNsb0w/Y2gO428xRrMrFk7TSGGtyw/view?utm_content=DAGkbyNsb0w&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hcbae1dcd9c](https://www.canva.com/design/DAGkbyNsb0w/miBB9HPQBodCmlXSiFBGuw/edit?utm_content=DAGkbyNsb0w&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton))
+[📊 Presentation link](https://www.canva.com/design/DAGkbyNsb0w/miBB9HPQBodCmlXSiFBGuw/edit?utm_content=DAGkbyNsb0w&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
 
 
