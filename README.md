@@ -11,7 +11,7 @@
 
 # JalDhara - AI-Powered Water Management for Sustainable Agriculture
 
-![JalDhara Logo](public/logo.png)
+![JalDhara Logo](https://photos.app.goo.gl/4HwfiT9R5pYb9UKQ7)
 
 ## 🌊 Live Demo
 **[https://jaldhara.web.app](https://jaldhara.web.app)**
