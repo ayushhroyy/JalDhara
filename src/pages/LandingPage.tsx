@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DropletIcon, Sprout, ArrowRight, Volume2 } from 'lucide-react';
+import { DropletIcon, Sprout, ArrowRight, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import WaterDropAnimation from '@/components/WaterDropAnimation';
 import WeatherWidget from '@/components/WeatherWidget';
 import AiAdviceWidget from '@/components/AiAdviceWidget';
-import VoiceDialog from '@/components/VoiceDialog';
+import UnifiedVoiceButton from '@/components/UnifiedVoiceButton';
 
 interface LandingPageProps {
   language: 'en' | 'hi';
@@ -15,7 +15,6 @@ interface LandingPageProps {
 const LandingPage: React.FC<LandingPageProps> = ({ language }) => {
   const navigate = useNavigate();
   const [sharedLocation, setSharedLocation] = useState('');
-  const [voiceDialogOpen, setVoiceDialogOpen] = useState(false);
 
   const handleLocationSelected = (location: string) => {
     setSharedLocation(location);
@@ -23,11 +22,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ language }) => {
 
   const handleVoiceData = (text: string) => {
     console.log("Voice data received:", text);
-    // You could analyze the text and navigate based on voice commands
-    // For now, we'll just navigate to reports after voice interaction
-    setTimeout(() => {
-      navigate('/reports');
-    }, 2000);
+  };
+
+  const handleResponseData = (text: string) => {
+    console.log("AI response received:", text);
+    // No automatic navigation to avoid the redirect issue
   };
 
   const content = {
@@ -98,7 +97,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ language }) => {
         
         <WaterDropAnimation count={7} />
         
-        <div className="flex items-center mt-6 gap-4">
+        <div className="flex items-center mt-6 gap-4 flex-wrap justify-center">
           <Button 
             onClick={() => navigate('/reports')} 
             size="lg" 
@@ -108,14 +107,24 @@ const LandingPage: React.FC<LandingPageProps> = ({ language }) => {
             <ArrowRight className="h-4 w-4" />
           </Button>
           
-          <Button
+          <UnifiedVoiceButton
+            language={language}
             variant="outline"
             size="lg"
-            className="gap-2 border-water text-water hover:bg-water/10"
-            onClick={() => setVoiceDialogOpen(true)}
+            showText={true}
+            onVoiceData={handleVoiceData}
+            onResponseData={handleResponseData}
+            className="border-water text-water hover:bg-water/10"
+          />
+          
+          <Button
+            onClick={() => navigate('/modern-voice')}
+            variant="outline"
+            size="lg"
+            className="gap-2 border-purple-500 text-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20"
           >
-            <Volume2 className="h-4 w-4" />
-            {language === 'en' ? 'Voice Assistant' : 'आवाज़ सहायक'}
+            <Bot className="h-4 w-4" />
+            {language === 'en' ? 'Modern AI' : 'आधुनिक AI'}
           </Button>
         </div>
       </div>
@@ -145,14 +154,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ language }) => {
           <AiAdviceWidget language={language} />
         </div>
       </div>
-      
-      {/* Voice Dialog */}
-      <VoiceDialog 
-        open={voiceDialogOpen} 
-        onOpenChange={setVoiceDialogOpen} 
-        language={language}
-        onVoiceData={handleVoiceData}
-      />
     </div>
   );
 };

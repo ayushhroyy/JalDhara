@@ -1,5 +1,5 @@
 import React from 'react';
-import { DropletIcon, Sprout, Mic, Newspaper } from 'lucide-react';
+import { DropletIcon, Sprout, Mic, Newspaper, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -45,6 +45,16 @@ const Header: React.FC<HeaderProps> = ({ currentLanguage, onLanguageChange }) =>
           >
             <Mic className="h-4 w-4 mr-1" />
             {currentLanguage === 'en' ? 'Voice Assistant' : 'वॉयस असिस्टेंट'}
+          </Button>
+          
+          <Button 
+            variant={isActive('/modern-voice') ? "secondary" : "ghost"} 
+            size="sm"
+            onClick={() => navigate('/modern-voice')}
+            className="hidden sm:inline-flex items-center"
+          >
+            <Bot className="h-4 w-4 mr-1" />
+            {currentLanguage === 'en' ? 'Modern AI' : 'आधुनिक AI'}
           </Button>
           
           <Button 
