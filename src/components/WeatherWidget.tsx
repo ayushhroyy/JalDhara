@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Loader2, MapPin, Cloud, Droplets, Thermometer, Calendar, ChevronRight } from 'lucide-react';
+import { Loader2, MapPin, Cloud, Droplets, Thermometer, Calendar, ChevronRight, Sun, CloudRain, CloudFog, Wind } from 'lucide-react';
 import { toast } from 'sonner';
 import { getWeatherData, WeatherData, getRainfallForecast } from '@/integrations/weather';
 
@@ -142,16 +142,33 @@ const WeatherWidget: React.FC<WeatherWidgetProps> = ({
     });
   };
 
+  // Get weather icon based on condition
+  const getWeatherIcon = (condition: string) => {
+    const lowerCondition = condition.toLowerCase();
+    if (lowerCondition.includes('sun') || lowerCondition.includes('clear')) {
+      return <Sun className="h-12 w-12 text-yellow-500 animate-pulse" />; 
+    } else if (lowerCondition.includes('rain') || lowerCondition.includes('drizzle')) {
+      return <CloudRain className="h-12 w-12 text-blue-500 animate-weather-rain" />;
+    } else if (lowerCondition.includes('fog') || lowerCondition.includes('mist')) {
+      return <CloudFog className="h-12 w-12 text-gray-500 animate-weather-fog" />;
+    } else if (lowerCondition.includes('wind')) {
+      return <Wind className="h-12 w-12 text-teal-500 animate-weather-wind" />;
+    } else {
+      return <Cloud className="h-12 w-12 text-blue-400 animate-weather-float" />;
+    }
+  };
+
   return (
     <>
       <Card 
-        className="border-blue-400 cursor-pointer hover:shadow-md transition-shadow"
+        className="border-blue-400 hover:shadow-lg transition-all duration-300 overflow-hidden relative group"
         onClick={() => weather && setShowWeatherDetails(true)}
       >
-        <CardHeader className="bg-blue-50 dark:bg-blue-950">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 to-sky-100/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <CardHeader className="bg-gradient-to-r from-blue-100 to-sky-100 dark:from-blue-950 dark:to-sky-950">
           <CardTitle className="text-lg flex justify-between items-center">
-            <span>{language === 'en' ? 'Weather Information' : 'मौसम की जानकारी'}</span>
-            {weather && <ChevronRight className="h-4 w-4" />}
+            <span className="font-medium text-blue-800 dark:text-blue-200">{language === 'en' ? 'Weather Information' : 'मौसम की जानकारी'}</span>
+            {weather && <ChevronRight className="h-4 w-4 text-blue-700 dark:text-blue-300 group-hover:translate-x-1 transition-transform" />}
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-4">
@@ -162,7 +179,7 @@ const WeatherWidget: React.FC<WeatherWidgetProps> = ({
                 value={displayLocation}
                 onChange={handleLocationChange}
                 disabled={isLoading}
-                className="flex-1"
+                className="flex-1 border-blue-200 focus:border-blue-500 focus:ring-blue-400"
                 onClick={(e) => e.stopPropagation()}
               />
               
@@ -170,51 +187,55 @@ const WeatherWidget: React.FC<WeatherWidgetProps> = ({
                 type="submit" 
                 disabled={isLoading} 
                 variant="outline"
+                className="border-blue-300 hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900"
                 onClick={(e) => e.stopPropagation()}
               >
                 {isLoading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-4 w-4 animate-spin text-blue-600" />
                 ) : (
-                  <MapPin className="h-4 w-4" />
+                  <MapPin className="h-4 w-4 text-blue-600" />
                 )}
               </Button>
             </div>
           </form>
           
           {weather && (
-            <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-950 rounded-md">
-              <h3 className="font-medium mb-2">{weather.location}</h3>
+            <div className="mt-4 p-4 bg-gradient-to-br from-blue-50 to-sky-50 dark:from-blue-950 dark:to-sky-950 rounded-lg shadow-inner transition-all hover:shadow-md">
+              <div className="flex items-center justify-between">
+                <h3 className="font-medium text-blue-800 dark:text-blue-200">{weather.location}</h3>
+                {getWeatherIcon(weather.condition)}
+              </div>
               
-              <div className="grid grid-cols-2 gap-2 text-sm">
-                <div className="flex items-center">
-                  <Thermometer className="h-4 w-4 mr-1 text-red-500" />
+              <div className="grid grid-cols-2 gap-3 mt-3 text-sm">
+                <div className="flex items-center p-2 bg-white/70 dark:bg-slate-800/70 rounded-md">
+                  <Thermometer className="h-5 w-5 mr-2 text-red-500" />
                   <span>
                     {language === 'en' ? 'Temperature: ' : 'तापमान: '}
-                    {weather.temperature}°C
+                    <span className="font-medium">{weather.temperature}°C</span>
                   </span>
                 </div>
                 
-                <div className="flex items-center">
-                  <Cloud className="h-4 w-4 mr-1 text-blue-500" />
+                <div className="flex items-center p-2 bg-white/70 dark:bg-slate-800/70 rounded-md">
+                  <Cloud className="h-5 w-5 mr-2 text-blue-500" />
                   <span>
                     {language === 'en' ? 'Condition: ' : 'स्थिति: '}
-                    {weather.condition}
+                    <span className="font-medium">{weather.condition}</span>
                   </span>
                 </div>
                 
-                <div className="flex items-center">
-                  <Droplets className="h-4 w-4 mr-1 text-blue-500" />
+                <div className="flex items-center p-2 bg-white/70 dark:bg-slate-800/70 rounded-md">
+                  <Droplets className="h-5 w-5 mr-2 text-blue-500" />
                   <span>
                     {language === 'en' ? 'Humidity: ' : 'आर्द्रता: '}
-                    {weather.humidity}%
+                    <span className="font-medium">{weather.humidity}%</span>
                   </span>
                 </div>
                 
-                <div className="flex items-center">
-                  <Droplets className="h-4 w-4 mr-1 text-blue-600" />
+                <div className="flex items-center p-2 bg-white/70 dark:bg-slate-800/70 rounded-md">
+                  <Droplets className="h-5 w-5 mr-2 text-blue-600" />
                   <span>
                     {language === 'en' ? 'Rainfall: ' : 'वर्षा: '}
-                    {weather.rainfall_mm} mm
+                    <span className="font-medium">{weather.rainfall_mm} mm</span>
                   </span>
                 </div>
               </div>
@@ -225,10 +246,11 @@ const WeatherWidget: React.FC<WeatherWidgetProps> = ({
 
       {/* Detailed Weather Dialog */}
       <Dialog open={showWeatherDetails} onOpenChange={setShowWeatherDetails}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md bg-gradient-to-br from-blue-50 to-sky-50 dark:from-slate-950 dark:to-blue-950 border-blue-200">
           <DialogHeader>
-            <DialogTitle>
-              {language === 'en' ? 'Weather Forecast' : 'मौसम का पूर्वानुमान'} - {weather?.location}
+            <DialogTitle className="text-xl text-blue-800 dark:text-blue-200 flex items-center gap-2">
+              {weather && getWeatherIcon(weather.condition)}
+              <span>{language === 'en' ? 'Weather Forecast' : 'मौसम का पूर्वानुमान'} - {weather?.location}</span>
             </DialogTitle>
           </DialogHeader>
           
@@ -307,6 +329,43 @@ const WeatherWidget: React.FC<WeatherWidgetProps> = ({
           )}
         </DialogContent>
       </Dialog>
+
+      <style>
+        {`
+          @keyframes weather-rain {
+            0% { transform: translateY(0px); }
+            70% { transform: translateY(3px); }
+            100% { transform: translateY(0px); }
+          }
+          @keyframes weather-wind {
+            0% { transform: translateX(0px); }
+            50% { transform: translateX(2px); }
+            100% { transform: translateX(0px); }
+          }
+          @keyframes weather-fog {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+          }
+          @keyframes weather-float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-2px); }
+            100% { transform: translateY(0px); }
+          }
+          .animate-weather-rain {
+            animation: weather-rain 1.5s infinite;
+          }
+          .animate-weather-wind {
+            animation: weather-wind 2s infinite;
+          }
+          .animate-weather-fog {
+            animation: weather-fog 3s infinite;
+          }
+          .animate-weather-float {
+            animation: weather-float 3s infinite;
+          }
+        `}
+      </style>
     </>
   );
 };

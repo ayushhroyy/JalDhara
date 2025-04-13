@@ -40,10 +40,10 @@
     --water-dark: 204 56% 30%;
     --water-foreground: 210 40% 98%;
     
-    /* Earth theme specific colors */
-    --earth: 142 36% 42%;
-    --earth-light: 142 36% 60%;
-    --earth-dark: 142 36% 32%;
+    /* Earth theme specific colors - Updated to make dhara green */
+    --earth: 142 76% 45%;  /* Brighter, more vibrant green */
+    --earth-light: 142 76% 65%;
+    --earth-dark: 142 76% 35%;
     --earth-foreground: 210 40% 98%;
 
     --sidebar-background: 0 0% 98%;
@@ -91,10 +91,10 @@
     --water-dark: 204 56% 35%;
     --water-foreground: 210 40% 98%;
     
-    /* Earth theme specific colors for dark mode */
-    --earth: 142 36% 42%;
-    --earth-light: 142 36% 60%;
-    --earth-dark: 142 36% 32%;
+    /* Earth theme specific colors for dark mode - Updated to make dhara green */
+    --earth: 142 76% 50%;  /* Brighter, more vibrant green for dark mode */
+    --earth-light: 142 76% 70%;
+    --earth-dark: 142 76% 40%;
     --earth-foreground: 210 40% 98%;
 
     --sidebar-background: 240 5.9% 10%;

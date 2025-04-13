@@ -1,13 +1,14 @@
-
 import React from 'react';
 import LandingPage from './LandingPage';
+import { SupportedLanguage } from '@/App';
 
 interface IndexProps {
-  language: 'en' | 'hi';
+  language: SupportedLanguage;
+  onLanguageChange?: (lang: SupportedLanguage) => void;
 }
 
-const Index: React.FC<IndexProps> = ({ language }) => {
-  return <LandingPage language={language} />;
+const Index: React.FC<IndexProps> = ({ language, onLanguageChange }) => {
+  return <LandingPage language={language} onLanguageChange={onLanguageChange} />;
 };
 
 export default Index;

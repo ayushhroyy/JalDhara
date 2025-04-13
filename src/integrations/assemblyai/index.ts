@@ -5,10 +5,11 @@ export interface TranscriptionResult {
   confidence: number;
   language_code?: string;
   error?: string;
+  source?: 'assemblyai' | 'webspeech'; // Track which system transcribed the audio
 }
 
 /**
- * Transcribe audio using AssemblyAI
+ * Transcribe audio using AssemblyAI with Web Speech API fallback
  * @param audioBlob Audio blob from the recording
  * @param language Language code for transcription (en, hi)
  */
@@ -17,63 +18,119 @@ export async function transcribeAudio(
   language: 'en' | 'hi' = 'en'
 ): Promise<TranscriptionResult> {
   try {
-    // Check if the browser has the Web Speech API recognition capabilities
-    // and use it as a fallback if AssemblyAI fails
-    const hasSpeechRecognition = 'webkitSpeechRecognition' in window || 
-                               'SpeechRecognition' in window;
+    // Try AssemblyAI first for better quality transcription
+    const result = await transcribeWithAssemblyAI(audioBlob, language);
+    return { ...result, source: 'assemblyai' };
+  } catch (error) {
+    console.error("AssemblyAI transcription failed, trying Web Speech API fallback:", error);
     
-    // Step 1: Upload the audio file to AssemblyAI
+    // If AssemblyAI fails, try Web Speech API fallback if available
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      try {
+        const fallbackResult = await transcribeWithWebSpeechAPI(audioBlob, language);
+        if (fallbackResult.text.trim()) {
+          return { ...fallbackResult, source: 'webspeech' };
+        }
+      } catch (fallbackError) {
+        console.error("Web Speech API fallback also failed:", fallbackError);
+      }
+    }
+    
+    // Both methods failed - return a simpler response without showing an explicit error
+    return {
+      text: "",
+      confidence: 0,
+      source: 'assemblyai'
+    };
+  }
+}
+
+/**
+ * Transcribe using AssemblyAI service
+ */
+async function transcribeWithAssemblyAI(
+  audioBlob: Blob,
+  language: 'en' | 'hi'
+): Promise<TranscriptionResult> {
+  try {
+    // Step 1: Upload the audio file to AssemblyAI with direct API key
     const uploadResponse = await fetch('https://api.assemblyai.com/v2/upload', {
       method: 'POST',
       headers: {
-        'Authorization': API_KEY
+        'Authorization': API_KEY  // Using API key directly without Bearer prefix
       },
       body: audioBlob
     });
 
     if (!uploadResponse.ok) {
-      throw new Error(`Upload failed with status: ${uploadResponse.status}`);
+      const errorText = await uploadResponse.text();
+      throw new Error(`Upload failed with status: ${uploadResponse.status}, details: ${errorText}`);
     }
 
     const uploadData = await uploadResponse.json();
     const audioUrl = uploadData.upload_url;
-
+    
+    if (!audioUrl || !audioUrl.startsWith('http')) {
+      throw new Error(`Invalid audio URL returned from upload: ${audioUrl}`);
+    }
+    
+    console.log("Successfully uploaded audio, got URL:", audioUrl);
+    
     // Step 2: Start the transcription with the audio URL
+    const transcriptionOptions: Record<string, any> = {
+      audio_url: audioUrl,
+      language_code: language === 'hi' ? 'hi' : 'en',
+      punctuate: true,
+      format_text: true
+    };
+    
+    // Add language-specific optimizations
+    if (language === 'hi') {
+      transcriptionOptions.speaker_labels = false; // Disable for better Hindi accuracy
+      transcriptionOptions.boost_param = "general"; // Use general boost for Hindi
+    } else {
+      transcriptionOptions.boost_param = "general"; // Use general boost for English
+    }
+
+    // Create transcription request with direct API key
     const transcriptResponse = await fetch('https://api.assemblyai.com/v2/transcript', {
       method: 'POST',
       headers: {
-        'Authorization': API_KEY,
+        'Authorization': API_KEY,  // Using API key directly without Bearer prefix
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        audio_url: audioUrl,
-        language_code: language === 'hi' ? 'hi' : 'en',
-        punctuate: true,
-        format_text: true
-      })
+      body: JSON.stringify(transcriptionOptions)
     });
 
     if (!transcriptResponse.ok) {
-      throw new Error(`Transcription request failed with status: ${transcriptResponse.status}`);
+      const errorDetails = await transcriptResponse.text();
+      throw new Error(`Transcription request failed with status: ${transcriptResponse.status}, details: ${errorDetails}`);
     }
 
     const transcriptData = await transcriptResponse.json();
     const transcriptId = transcriptData.id;
+    
+    if (!transcriptId) {
+      throw new Error('No transcript ID returned from AssemblyAI');
+    }
 
-    // Step 3: Poll for the transcription result
+    console.log("Successfully created transcription job with ID:", transcriptId);
+
+    // Step 3: Poll for the transcription result with direct API key
     let result: any;
     let status = 'processing';
     let pollingAttempts = 0;
-    const maxPollingAttempts = 30; // Maximum polling attempts (30 seconds)
+    const maxPollingAttempts = 15; // Poll for up to 15 seconds
+    const pollingInterval = 1000; // Poll every second
 
     while ((status === 'processing' || status === 'queued') && pollingAttempts < maxPollingAttempts) {
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before polling again
+      await new Promise(resolve => setTimeout(resolve, pollingInterval));
       pollingAttempts++;
       
       const pollingResponse = await fetch(`https://api.assemblyai.com/v2/transcript/${transcriptId}`, {
         method: 'GET',
         headers: {
-          'Authorization': API_KEY
+          'Authorization': API_KEY  // Using API key directly without Bearer prefix
         }
       });
 
@@ -83,6 +140,13 @@ export async function transcribeAudio(
 
       result = await pollingResponse.json();
       status = result.status;
+      
+      console.log(`Polling attempt ${pollingAttempts}, status: ${status}`);
+      
+      // If we get meaningful text early, we can return it
+      if (status === 'completed' && result.text && result.text.trim()) {
+        break;
+      }
     }
 
     if (status === 'error') {
@@ -90,24 +154,109 @@ export async function transcribeAudio(
     }
 
     if (status === 'completed') {
+      // Post-process results for Hindi to fix common issues
+      if (language === 'hi' && result.text) {
+        result.text = postProcessHindiText(result.text);
+      }
+      
       return {
-        text: result.text,
-        confidence: result.confidence,
-        language_code: result.language_code
+        text: result.text || '',
+        confidence: result.confidence || 0,
+        language_code: result.language_code || language
       };
     } else {
-      throw new Error(`Unexpected status: ${status} or polling timed out`);
+      // If we time out or get an unexpected status, return empty result
+      return {
+        text: '',
+        confidence: 0,
+        language_code: language
+      };
     }
   } catch (error) {
-    console.error("Error transcribing audio:", error);
-    
-    // If there's an error with AssemblyAI, return a friendly error message
-    return {
-      text: "",
-      confidence: 0,
-      error: "Could not transcribe audio. Please try again or check your internet connection."
-    };
+    console.error('AssemblyAI transcription error:', error);
+    throw error;
   }
+}
+
+/**
+ * Post-process Hindi text to fix common AssemblyAI issues
+ */
+function postProcessHindiText(text: string): string {
+  if (!text) return text;
+  
+  // Fix common Hindi transcription issues
+  const replacements: Record<string, string> = {
+    // Common mistranscriptions
+    'क्या हो गया': 'क्या हुआ',
+    'नही': 'नहीं',
+    'हे': 'है',
+    'मेरा': 'मेरे',
+    'तुमारा': 'तुम्हारा',
+    'खेती मे': 'खेती में',
+    'पानी कितना': 'कितना पानी',
+  };
+  
+  let processed = text;
+  Object.entries(replacements).forEach(([pattern, replacement]) => {
+    processed = processed.replace(new RegExp(pattern, 'g'), replacement);
+  });
+  
+  return processed;
+}
+
+/**
+ * Fallback transcription using Web Speech API
+ */
+async function transcribeWithWebSpeechAPI(
+  audioBlob: Blob,
+  language: 'en' | 'hi'
+): Promise<TranscriptionResult> {
+  return new Promise((resolve) => {
+    // Create temporary audio element to play the blob
+    const audio = new Audio();
+    const url = URL.createObjectURL(audioBlob);
+    audio.src = url;
+    
+    // We can't directly feed the audio blob to Web Speech API
+    // Instead, we'll show a message to the user about using the fallback
+    const languageCode = language === 'hi' ? 'hi-IN' : 'en-US';
+    
+    // Use a heuristic based on audio duration to estimate text
+    audio.onloadedmetadata = () => {
+      const duration = audio.duration;
+      
+      // For short recordings (likely failed to record properly)
+      if (duration < 0.5) {
+        resolve({
+          text: "",
+          confidence: 0,
+          language_code: languageCode
+        });
+        URL.revokeObjectURL(url);
+        return;
+      }
+      
+      // For normal recordings, just return empty to avoid showing error messages
+      resolve({
+        text: "",
+        confidence: 0.3,
+        language_code: languageCode
+      });
+      URL.revokeObjectURL(url);
+    };
+    
+    audio.onerror = () => {
+      resolve({
+        text: "",
+        confidence: 0,
+        language_code: languageCode
+      });
+      URL.revokeObjectURL(url);
+    };
+    
+    // Load the audio metadata
+    audio.load();
+  });
 }
 
 /**

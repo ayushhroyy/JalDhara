@@ -24,9 +24,11 @@ import {
   AlertCircle 
 } from 'lucide-react';
 import { getFarmingNews, getGovernmentSchemes, NewsItem } from '@/integrations/news';
+import { SupportedLanguage } from '@/App';
+import { getTranslation } from '@/utils/translations';
 
 interface NewsPageProps {
-  language: 'en' | 'hi';
+  language: SupportedLanguage;
 }
 
 const News: React.FC<NewsPageProps> = ({ language }) => {
@@ -36,31 +38,19 @@ const News: React.FC<NewsPageProps> = ({ language }) => {
   const [activeTab, setActiveTab] = useState<string>('farming');
   const [error, setError] = useState<string | null>(null);
 
-  const content = {
-    en: {
-      pageTitle: "Agriculture News & Schemes",
-      pageDescription: "Latest farming news and government schemes for farmers",
-      farmingNewsTab: "Farming News",
-      schemesTab: "Government Schemes",
-      readMore: "Read More",
-      loadingText: "Loading news...",
-      errorMessage: "Failed to load news. Please try again later.",
-      noNews: "No news available at the moment.",
-      publishedOn: "Published on",
-      source: "Source"
-    },
-    hi: {
-      pageTitle: "कृषि समाचार और योजनाएँ",
-      pageDescription: "किसानों के लिए नवीनतम खेती समाचार और सरकारी योजनाएँ",
-      farmingNewsTab: "खेती समाचार",
-      schemesTab: "सरकारी योजनाएँ",
-      readMore: "और पढ़ें",
-      loadingText: "समाचार लोड हो रहा है...",
-      errorMessage: "समाचार लोड करने में विफल। कृपया बाद में पुनः प्रयास करें।",
-      noNews: "इस समय कोई समाचार उपलब्ध नहीं है।",
-      publishedOn: "प्रकाशित",
-      source: "स्रोत"
-    }
+  // Get translations directly using the translation utility
+  const translations = {
+    pageTitle: getTranslation('newsTitle', language) || 'Agriculture News & Schemes',
+    pageDescription: getTranslation('newsDescription', language) || 'Latest farming news and government schemes for farmers',
+    farmingNewsTab: getTranslation('farmingNewsTab', language) || 'Farming News',
+    schemesTab: getTranslation('schemesTab', language) || 'Government Schemes',
+    readMore: getTranslation('readMore', language) || 'Read More',
+    loadingText: getTranslation('loading', language) || 'Loading news...',
+    errorMessage: getTranslation('errorMessage', language) || 'Failed to load news. Please try again later.',
+    noNews: getTranslation('noNewsAvailable', language) || 'No news available at the moment.',
+    publishedOn: getTranslation('publishedOn', language) || 'Published on',
+    source: getTranslation('source', language) || 'Source',
+    errorOccurred: getTranslation('errorOccurred', language) || 'An error occurred. Please try again later.'
   };
 
   useEffect(() => {
@@ -87,20 +77,37 @@ const News: React.FC<NewsPageProps> = ({ language }) => {
         setSchemeItems(schemesData.results);
       } catch (err) {
         console.error('Error loading news:', err);
-        setError(err instanceof Error ? err.message : 'Unknown error occurred');
+        setError(translations.errorOccurred);
       } finally {
         setLoading(false);
       }
     }
     
     loadData();
-  }, [language]);
+  }, [language, translations.errorOccurred]);
 
   // Format date in a user-friendly way
   const formatDate = (dateString: string) => {
     try {
+      // Get locale based on language
+      const localeMap: Record<SupportedLanguage, string> = {
+        en: 'en-US',
+        hi: 'hi-IN',
+        bn: 'bn-IN',
+        mr: 'mr-IN',
+        te: 'te-IN',
+        ta: 'ta-IN',
+        gu: 'gu-IN',
+        ur: 'ur-IN',
+        kn: 'kn-IN',
+        ml: 'ml-IN',
+        pa: 'pa-IN'
+      };
+      
+      const locale = localeMap[language] || 'en-US';
       const date = new Date(dateString);
-      return new Intl.DateTimeFormat(language === 'en' ? 'en-US' : 'hi-IN', {
+      
+      return new Intl.DateTimeFormat(locale, {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
@@ -117,7 +124,7 @@ const News: React.FC<NewsPageProps> = ({ language }) => {
         <CardTitle className="text-lg font-bold line-clamp-2">{item.title}</CardTitle>
         <CardDescription className="flex items-center text-xs">
           <Clock className="h-3 w-3 mr-1 inline" />
-          {content[language].publishedOn} {formatDate(item.pubDate)}
+          {translations.publishedOn} {formatDate(item.pubDate)}
         </CardDescription>
       </CardHeader>
       
@@ -139,11 +146,11 @@ const News: React.FC<NewsPageProps> = ({ language }) => {
       <CardFooter className="flex justify-between items-center border-t border-border/30 pt-3 pb-2 text-xs">
         <span className="text-muted-foreground flex items-center">
           <Newspaper className="h-3 w-3 mr-1" />
-          {content[language].source}: {item.source_id}
+          {translations.source}: {item.source_id}
         </span>
         <Button size="sm" variant="outline" className="h-8" asChild>
           <a href={item.link} target="_blank" rel="noopener noreferrer">
-            {content[language].readMore}
+            {translations.readMore}
             <ExternalLink className="h-3 w-3 ml-1" />
           </a>
         </Button>
@@ -182,10 +189,10 @@ const News: React.FC<NewsPageProps> = ({ language }) => {
       <div className="max-w-5xl mx-auto">
         <div className="mb-6 text-center">
           <h1 className="text-3xl font-bold text-water-dark">
-            {content[language].pageTitle}
+            {translations.pageTitle}
           </h1>
           <p className="text-muted-foreground mt-2">
-            {content[language].pageDescription}
+            {translations.pageDescription}
           </p>
         </div>
         
@@ -193,11 +200,11 @@ const News: React.FC<NewsPageProps> = ({ language }) => {
           <TabsList className="grid w-full grid-cols-2 mb-6">
             <TabsTrigger value="farming" className="flex items-center gap-2">
               <Tractor className="h-4 w-4" />
-              {content[language].farmingNewsTab}
+              {translations.farmingNewsTab}
             </TabsTrigger>
             <TabsTrigger value="schemes" className="flex items-center gap-2">
               <Building className="h-4 w-4" />
-              {content[language].schemesTab}
+              {translations.schemesTab}
             </TabsTrigger>
           </TabsList>
           
@@ -208,7 +215,7 @@ const News: React.FC<NewsPageProps> = ({ language }) => {
               <Card className="bg-red-50 border-red-200">
                 <CardContent className="pt-6 flex items-center">
                   <AlertCircle className="text-red-500 h-5 w-5 mr-2" />
-                  <p>{content[language].errorMessage}</p>
+                  <p>{translations.errorMessage}</p>
                 </CardContent>
               </Card>
             ) : newsItems.length > 0 ? (
@@ -216,7 +223,7 @@ const News: React.FC<NewsPageProps> = ({ language }) => {
             ) : (
               <Card className="bg-amber-50 border-amber-200">
                 <CardContent className="pt-6">
-                  <p>{content[language].noNews}</p>
+                  <p>{translations.noNews}</p>
                 </CardContent>
               </Card>
             )}
@@ -229,7 +236,7 @@ const News: React.FC<NewsPageProps> = ({ language }) => {
               <Card className="bg-red-50 border-red-200">
                 <CardContent className="pt-6 flex items-center">
                   <AlertCircle className="text-red-500 h-5 w-5 mr-2" />
-                  <p>{content[language].errorMessage}</p>
+                  <p>{translations.errorMessage}</p>
                 </CardContent>
               </Card>
             ) : schemeItems.length > 0 ? (
@@ -237,7 +244,7 @@ const News: React.FC<NewsPageProps> = ({ language }) => {
             ) : (
               <Card className="bg-amber-50 border-amber-200">
                 <CardContent className="pt-6">
-                  <p>{content[language].noNews}</p>
+                  <p>{translations.noNews}</p>
                 </CardContent>
               </Card>
             )}

@@ -5,7 +5,7 @@ import { Separator } from '@/components/ui/separator';
 import { Loader2, Save, RotateCw, Volume2, VolumeX, Mic, Droplets } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-import { analyzeWaterUsage } from '@/integrations/gemini';
+import { analyzeWaterUsage } from '@/integrations/cohere';
 import AiAdviceWidget from '@/components/AiAdviceWidget';
 import RainfallForecastWidget from '@/components/RainfallForecastWidget';
 import WaterUsageChart from '@/components/WaterUsageChart';
@@ -362,11 +362,12 @@ const Calculator: React.FC<CalculatorProps> = ({ language }) => {
                 </Button>
               ) : (
                 <Button 
-                  onClick={handleSaveReport}
-                  className="bg-earth hover:bg-earth-dark text-white shadow-md"
+                  onClick={handleSaveReport} 
+                  disabled={!analysisComplete}
+                  className="gap-2 w-full bg-water hover:bg-water-dark text-white app-button-glow water-button-glow"
                 >
-                  <Save className="mr-2 h-4 w-4" />
-                  {content[language].sample.report}
+                  {language === 'en' ? 'Save Report' : 'रिपोर्ट सहेजें'}
+                  <Save className="h-4 w-4" />
                 </Button>
               )}
             </CardFooter>
