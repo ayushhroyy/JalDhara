@@ -1,0 +1,218 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 204 56% 40%;  /* Blue for water theme */
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 142 36% 55%; /* Green for earth theme */
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 142 36% 55%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
+
+    /* Water theme specific colors */
+    --water: 204 56% 40%;
+    --water-light: 204 56% 60%;
+    --water-dark: 204 56% 30%;
+    --water-foreground: 210 40% 98%;
+    
+    /* Earth theme specific colors - Updated to make dhara green */
+    --earth: 142 76% 45%;  /* Brighter, more vibrant green */
+    --earth-light: 142 76% 65%;
+    --earth-dark: 142 76% 35%;
+    --earth-foreground: 210 40% 98%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+
+    /* Water theme specific colors for dark mode */
+    --water: 204 56% 45%;
+    --water-light: 204 56% 65%;
+    --water-dark: 204 56% 35%;
+    --water-foreground: 210 40% 98%;
+    
+    /* Earth theme specific colors for dark mode - Updated to make dhara green */
+    --earth: 142 76% 50%;  /* Brighter, more vibrant green for dark mode */
+    --earth-light: 142 76% 70%;
+    --earth-dark: 142 76% 40%;
+    --earth-foreground: 210 40% 98%;
+
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.water-droplet {
+  @apply relative w-6 h-8 bg-water rounded-t-full rounded-b-full before:content-[''] before:absolute before:w-6 before:h-6 before:bg-water before:rounded-full before:-top-3 before:left-0;
+}
+
+/* Water-themed animations */
+@keyframes ripple {
+  0% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.ripple-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple-effect:after {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, hsl(var(--water) / 0.7) 10%, transparent 10.01%);
+  background-repeat: no-repeat;
+  background-position: 50%;
+  transform: scale(10, 10);
+  opacity: 0;
+  transition: transform 0.5s, opacity 0.8s;
+}
+
+.ripple-effect:active:after {
+  transform: scale(0, 0);
+  opacity: 0.3;
+  transition: 0s;
+}
+
+/* Water wave animation */
+.wave-animation {
+  position: relative;
+}
+
+.wave-animation::before {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  background: linear-gradient(90deg, transparent, hsl(var(--water) / 0.3), transparent);
+  animation: wave 2s infinite linear;
+  border-radius: 50%;
+}
+
+@keyframes wave {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Animated water button */
+.water-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s;
+  background-color: hsl(var(--water));
+  color: hsl(var(--water-foreground));
+}
+
+.water-button:hover {
+  background-color: hsl(var(--water-dark));
+}
+
+.water-button::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30%;
+  background: linear-gradient(to top, hsla(var(--water-light) / 0.2), transparent);
+  transform: translateY(100%);
+  transition: transform 0.3s ease-out;
+}
+
+.water-button:hover::after {
+  transform: translateY(0);
+}

@@ -1,0 +1,36 @@
+{
+  "articles": [
+    {
+      "title": "New Drought-Resistant Crop Varieties Released",
+      "description": "Scientists have developed new drought-resistant varieties of wheat and rice that can withstand severe water scarcity conditions while maintaining high yields. These varieties could help farmers in arid regions significantly improve their productivity.",
+      "publishedAt": "2023-10-15T09:30:00Z",
+      "url": "https://example.com/farming-news/drought-resistant-crops",
+      "source": "Agricultural Science Journal",
+      "image": "/images/news/drought-crops.jpg"
+    },
+    {
+      "title": "Government Announces Increased Subsidy for Organic Farming",
+      "description": "The Ministry of Agriculture has announced a 25% increase in subsidies for farmers transitioning to organic farming methods. The initiative aims to promote sustainable agriculture practices and improve soil health across the country.",
+      "publishedAt": "2023-10-10T14:15:00Z",
+      "url": "https://example.com/farming-news/organic-subsidy",
+      "source": "National Agricultural News",
+      "image": "/images/news/organic-farming.jpg"
+    },
+    {
+      "title": "New Mobile App Helps Farmers Monitor Soil Health",
+      "description": "A new smartphone application has been launched that allows farmers to analyze soil health using their phone's camera. The app uses AI to detect nutrient deficiencies and provides recommendations for soil treatment.",
+      "publishedAt": "2023-10-05T11:45:00Z",
+      "url": "https://example.com/farming-news/soil-app",
+      "source": "AgTech Today",
+      "image": "/images/news/soil-app.jpg"
+    },
+    {
+      "title": "Weather Forecast Predicts Good Monsoon Season",
+      "description": "Meteorological Department has predicted above-average rainfall during the upcoming monsoon season. Farmers are advised to prepare for a good planting season, with rainfall expected to be well-distributed across agricultural regions.",
+      "publishedAt": "2023-10-01T08:00:00Z",
+      "url": "https://example.com/farming-news/monsoon-forecast",
+      "source": "Weather Bureau",
+      "image": "/images/news/monsoon.jpg"
+    }
+  ]
+} 
