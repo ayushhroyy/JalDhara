@@ -19,4 +19,14 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    // Improve build performance
+    target: 'es2015',
+    // Increase the warning limit to reduce noise
+    chunkSizeWarningLimit: 1000,
+    // Enable source maps for debugging
+    sourcemap: mode === 'development',
+    // Enable minification for production
+    minify: mode === 'production',
+  },
 }));
