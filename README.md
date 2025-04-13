@@ -1,6 +1,18 @@
+## 👨‍👩‍👧‍👦 Team XCaliber
+
+- **Team Leader:** Naman Bharadwaj
+- **Team Members:**
+  - Pavani Kandwal
+  - Ayush Roy
+  - Kasharika Uppal
+  - Naman Bharadwaj
+
+https://www.canva.com/design/DAGkfWqvNPI/kevLUBoFWU4erKHXNeWIrw/edit?utm_content=DAGkfWqvNPI&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
+presentation
+
 # JalDhara - AI-Powered Water Management for Sustainable Agriculture
 
-![JalDhara Logo](public/logo.png)
+(![JalDhara Logo](https://github.com/user-attachments/assets/66ccedfb-3e12-401c-9b2d-9e22e7ae8bd4))
 
 ## 🌊 Live Demo
 **[https://jaldhara.web.app](https://jaldhara.web.app)**
@@ -105,14 +117,6 @@ Indian agriculture faces a severe water crisis, with inefficient irrigation prac
   - NewsData.io for agricultural news
 - **Deployment:** Firebase Hosting
 
-## 👨‍👩‍👧‍👦 Team XCaliber
-
-- **Team Leader:** Naman Bharadwaj
-- **Team Members:**
-  - Pavani Kandwal
-  - Ayush Roy
-  - Kasharika Uppal
-  - Naman Bharadwaj
 
 ## 🌍 Environmental Impact
 
