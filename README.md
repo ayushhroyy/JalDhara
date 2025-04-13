@@ -7,12 +7,11 @@
   - Kasharika Uppal
   - Naman Bharadwaj
 
-https://www.canva.com/design/DAGkfWqvNPI/kevLUBoFWU4erKHXNeWIrw/edit?utm_content=DAGkfWqvNPI&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
-presentation
+[presentation](https://www.canva.com/design/DAGkfWqvNPI/kevLUBoFWU4erKHXNeWIrw/edit?utm_content=DAGkfWqvNPI&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
 # JalDhara - AI-Powered Water Management for Sustainable Agriculture
 
-(![JalDhara Logo](https://github.com/user-attachments/assets/66ccedfb-3e12-401c-9b2d-9e22e7ae8bd4))
+![JalDhara Logo](https://github.com/user-attachments/assets/66ccedfb-3e12-401c-9b2d-9e22e7ae8bd4)
 
 ## 🌊 Live Demo
 **[https://jaldhara.web.app](https://jaldhara.web.app)**
